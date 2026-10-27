@@ -51,17 +51,16 @@ jobs:
     displayName: 'Build'
 
   - script: |
+      set -euo pipefail
       export GOPATH=$(go env GOPATH)
       sudo mkdir -p $GOPATH/src
       sudo chmod 777 $GOPATH
       sudo chmod 777 $GOPATH/src
       export PATH=$PATH:$GOPATH/bin
-      go get github.com/jstemmer/go-junit-report
-      go get github.com/axw/gocov/gocov
-      go get github.com/AlekSi/gocov-xml
-      make unittest 2>&1 | go-junit-report > report.xml
-      gocov convert coverage.out > coverage.json
-      gocov-xml < coverage.json > coverage.xml
+      go install github.com/jstemmer/go-junit-report@v1.0.0
+      go install github.com/boumenot/gocover-cobertura@v1.5.0
+      make unittest 2>&1 | go-junit-report -set-exit-code > report.xml
+      gocover-cobertura < coverage.out > coverage.xml
       mkdir coverage
     workingDirectory: '$(System.DefaultWorkingDirectory)'
     displayName: 'Unit Tests'
