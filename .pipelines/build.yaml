@@ -28,6 +28,8 @@ jobs:
       git config --global url.ssh://git@github.com/.insteadOf https://github.com/
       git config --global url."msazure@vs-ssh.visualstudio.com:v3".insteadOf https://msazure.visualstudio.com
     displayName: 'Set up the Go workspace'
+    # Fork builds have no SSH key; keep HTTPS for public dependencies.
+    condition: and(succeeded(), ne(variables['System.PullRequest.IsFork'], 'True'))
 
   - script: |
       # Static binary workaround for CodeQL and Go 1.21 and higher
